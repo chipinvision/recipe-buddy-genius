@@ -3,7 +3,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { RecipeCard } from "@/components/RecipeCard";
 import { IngredientInput } from "@/components/IngredientInput";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 type Tab = "ingredients" | "random";
 
