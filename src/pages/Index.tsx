@@ -27,7 +27,14 @@ const Index = () => {
         body: { ingredients }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error generating recipe:', error);
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('No recipe data received');
+      }
 
       setRecipe(data);
     } catch (error) {
