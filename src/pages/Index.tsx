@@ -4,6 +4,7 @@ import { RecipeCard } from "@/components/RecipeCard";
 import { IngredientInput } from "@/components/IngredientInput";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 type Tab = "ingredients" | "random";
 
@@ -22,14 +23,15 @@ const Index = () => {
   const generateRecipe = async (ingredients?: string[]) => {
     setIsLoading(true);
     try {
-      // Here we'll integrate with Gemini API
-      // For now, showing a toast to set up Gemini
-      toast({
-        title: "Gemini API Required",
-        description: "Please set up the Gemini API to generate recipes.",
-        variant: "destructive",
+      const { data, error } = await supabase.functions.invoke('generate-recipe', {
+        body: { ingredients }
       });
+
+      if (error) throw error;
+
+      setRecipe(data);
     } catch (error) {
+      console.error('Error generating recipe:', error);
       toast({
         title: "Error",
         description: "Failed to generate recipe. Please try again.",
