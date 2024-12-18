@@ -132,6 +132,8 @@ export const AuthForm = () => {
                     <FormControl>
                       <InputOTP
                         maxLength={6}
+                        value={field.value}
+                        onChange={field.onChange}
                         render={({ slots }) => (
                           <InputOTPGroup className="gap-2">
                             {slots.map((slot, index) => (
@@ -143,7 +145,6 @@ export const AuthForm = () => {
                             ))}
                           </InputOTPGroup>
                         )}
-                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
