@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import {
   Form,
   FormControl,
@@ -20,10 +21,10 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail } from "lucide-react";
+import { Phone } from "lucide-react";
 
 const formSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().min(10, "Please enter a valid phone number"),
 });
 
 const otpFormSchema = z.object({
@@ -32,12 +33,13 @@ const otpFormSchema = z.object({
 
 export const AuthForm = () => {
   const [showOTP, setShowOTP] = useState(false);
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      phone: "",
     },
   });
 
@@ -50,26 +52,30 @@ export const AuthForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      setLoading(true);
       const { error } = await supabase.auth.signInWithOtp({
-        email: values.email,
+        phone: values.phone,
       });
 
       if (error) throw error;
 
-      setEmail(values.email);
+      setPhone(values.phone);
       setShowOTP(true);
-      toast.success("OTP sent to your email address");
+      toast.success("OTP sent to your phone number");
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const onVerifyOTP = async (values: z.infer<typeof otpFormSchema>) => {
     try {
+      setLoading(true);
       const { error } = await supabase.auth.verifyOtp({
-        email,
+        phone,
         token: values.otp,
-        type: "email",
+        type: "sms",
       });
 
       if (error) throw error;
@@ -77,6 +83,8 @@ export const AuthForm = () => {
       toast.success("Successfully verified!");
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,8 +94,8 @@ export const AuthForm = () => {
         <CardTitle className="text-2xl text-center">Welcome</CardTitle>
         <CardDescription className="text-center">
           {!showOTP 
-            ? "Enter your email to receive a verification code" 
-            : "Enter the verification code sent to your email"
+            ? "Enter your phone number to receive a verification code" 
+            : "Enter the verification code sent to your phone"
           }
         </CardDescription>
       </CardHeader>
@@ -97,17 +105,21 @@ export const AuthForm = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="email"
+                name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-                        <Input 
-                          placeholder="your@email.com" 
-                          className="pl-10" 
-                          {...field} 
+                        <Phone className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground z-10" />
+                        <PhoneInput
+                          country="in"
+                          value={field.value}
+                          onChange={(phone) => field.onChange(`+${phone}`)}
+                          inputClass="!w-full !h-10 !pl-10 !pr-3 !py-2 !rounded-md !border !border-input !bg-background !text-sm"
+                          containerClass="!w-full"
+                          buttonClass="!border-0 !bg-transparent"
+                          dropdownClass="!bg-background !border !border-input"
                         />
                       </div>
                     </FormControl>
@@ -115,8 +127,8 @@ export const AuthForm = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Send Verification Code
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Sending..." : "Send Verification Code"}
               </Button>
             </form>
           </Form>
@@ -140,7 +152,7 @@ export const AuthForm = () => {
                               <InputOTPSlot 
                                 key={index} 
                                 {...slot} 
-                                index={index}
+                                className="w-10 h-12 text-lg"
                               />
                             ))}
                           </InputOTPGroup>
@@ -152,16 +164,17 @@ export const AuthForm = () => {
                 )}
               />
               <div className="space-y-2">
-                <Button type="submit" className="w-full">
-                  Verify Code
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Verifying..." : "Verify Code"}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   className="w-full"
                   onClick={() => setShowOTP(false)}
+                  disabled={loading}
                 >
-                  Back to Email Entry
+                  Back to Phone Entry
                 </Button>
               </div>
             </form>

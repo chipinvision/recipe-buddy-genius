@@ -36,3 +36,22 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Custom styles for phone input */
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus,
+.react-tel-input .selected-flag.open {
+  @apply bg-transparent;
+}
+
+.react-tel-input .country-list {
+  @apply text-foreground;
+}
+
+.react-tel-input .country-list .country:hover {
+  @apply bg-accent;
+}
+
+.react-tel-input .country-list .country.highlight {
+  @apply bg-accent;
+}
