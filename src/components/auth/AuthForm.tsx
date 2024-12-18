@@ -120,7 +120,11 @@ export const AuthForm = () => {
                       render={({ slots }) => (
                         <InputOTPGroup>
                           {slots.map((slot, index) => (
-                            <InputOTPSlot key={index} {...slot} />
+                            <InputOTPSlot 
+                              key={index} 
+                              {...slot} 
+                              index={index}  // Added index prop to resolve TypeScript error
+                            />
                           ))}
                         </InputOTPGroup>
                       )}
