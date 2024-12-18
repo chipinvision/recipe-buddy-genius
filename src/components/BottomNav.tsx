@@ -1,9 +1,9 @@
-import { UtensilsCrossed, Soup } from "lucide-react";
+import { UtensilsCrossed, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
-  activeTab: "ingredients" | "random";
-  onTabChange: (tab: "ingredients" | "random") => void;
+  activeTab: "ingredients" | "profile";
+  onTabChange: (tab: "ingredients" | "profile") => void;
 }
 
 export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
@@ -17,17 +17,17 @@ export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
         )}
       >
         <UtensilsCrossed size={24} />
-        <span className="text-xs">By Ingredients</span>
+        <span className="text-xs">Generator</span>
       </button>
       <button
-        onClick={() => onTabChange("random")}
+        onClick={() => onTabChange("profile")}
         className={cn(
           "flex flex-col items-center space-y-1",
-          activeTab === "random" ? "text-primary" : "text-gray-500"
+          activeTab === "profile" ? "text-primary" : "text-gray-500"
         )}
       >
-        <Soup size={24} />
-        <span className="text-xs">Random</span>
+        <User size={24} />
+        <span className="text-xs">Profile</span>
       </button>
     </div>
   );

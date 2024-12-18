@@ -2,11 +2,12 @@ import { useState } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { RecipeCard } from "@/components/RecipeCard";
 import { IngredientInput } from "@/components/IngredientInput";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
-type Tab = "ingredients" | "random";
+type Tab = "ingredients" | "profile";
 
 interface Recipe {
   title: string;
@@ -19,6 +20,10 @@ const Index = () => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   const generateRecipe = async (ingredients?: string[]) => {
     setIsLoading(true);
@@ -52,9 +57,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="container py-8 px-4">
-        <h1 className="text-3xl font-bold text-primary text-center mb-8">
-          Recipe Generator
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-primary">
+            Recipe Generator
+          </h1>
+          <Button variant="ghost" size="icon" onClick={handleSignOut}>
+            <LogOut className="h-5 w-5" />
+          </Button>
+        </div>
 
         {activeTab === "ingredients" ? (
           <div className="space-y-8">
@@ -63,14 +73,8 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-8">
-            <Button
-              onClick={() => generateRecipe()}
-              disabled={isLoading}
-              className="w-full max-w-2xl mx-auto block"
-            >
-              {isLoading ? "Generating Random Recipe..." : "Generate Random Recipe"}
-            </Button>
-            <RecipeCard recipe={recipe} isLoading={isLoading} />
+            <h2 className="text-2xl font-semibold">Profile</h2>
+            <p className="text-gray-600">Profile features coming soon...</p>
           </div>
         )}
       </div>
