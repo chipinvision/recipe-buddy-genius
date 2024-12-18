@@ -151,6 +151,7 @@ export const AuthForm = () => {
                             {slots.map((slot, index) => (
                               <InputOTPSlot 
                                 key={index} 
+                                index={index}  // Added index property
                                 {...slot} 
                                 className="w-10 h-12 text-lg"
                               />
