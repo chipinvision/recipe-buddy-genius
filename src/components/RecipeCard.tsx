@@ -91,11 +91,11 @@ export const RecipeCard = ({ recipe, isLoading }: RecipeCardProps) => {
             </div>
             <div>
               <h3 className="font-semibold mb-3 text-secondary text-lg">Instructions:</h3>
-              <div className="space-y-3 pl-5">
+              <ul className="list-disc pl-5 space-y-3">
                 {recipe.instructions.map((instruction, index) => (
-                  <p key={index} className="leading-relaxed">{instruction}</p>
+                  <li key={index} className="leading-relaxed">{instruction}</li>
                 ))}
-              </div>
+              </ul>
             </div>
             {recipe.nutritionalInfo && (
               <div>

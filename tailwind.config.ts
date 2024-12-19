@@ -29,7 +29,7 @@ export default {
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#ff6392",
+          DEFAULT: "#007bff",
           foreground: "#ffffff",
         },
         destructive: {

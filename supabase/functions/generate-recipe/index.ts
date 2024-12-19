@@ -21,9 +21,9 @@ serve(async (req) => {
     
     let prompt;
     if (ingredients && ingredients.length > 0) {
-      prompt = `Create a recipe using these ingredients: ${ingredients.join(', ')}. Return the response in this JSON format: { "title": "Recipe Title", "ingredients": ["ingredient 1", "ingredient 2"], "instructions": ["step 1", "step 2"] }`;
+      prompt = `Create a recipe using these ingredients: ${ingredients.join(', ')}. Return the response in this JSON format: { "title": "Recipe Title", "ingredients": ["ingredient 1", "ingredient 2"], "instructions": ["step 1", "step 2"], "nutritionalInfo": { "calories": number, "protein": number, "carbs": number, "fat": number } }. Make sure to include realistic nutritional values in the response.`;
     } else {
-      prompt = `Create a random recipe. Return the response in this JSON format: { "title": "Recipe Title", "ingredients": ["ingredient 1", "ingredient 2"], "instructions": ["step 1", "step 2"] }`;
+      prompt = `Create a random recipe. Return the response in this JSON format: { "title": "Recipe Title", "ingredients": ["ingredient 1", "ingredient 2"], "instructions": ["step 1", "step 2"], "nutritionalInfo": { "calories": number, "protein": number, "carbs": number, "fat": number } }. Make sure to include realistic nutritional values in the response.`;
     }
 
     console.log('Generating recipe with prompt:', prompt);
