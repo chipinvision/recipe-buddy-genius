@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -47,10 +48,7 @@ export const RecipeCard = ({ recipe, isLoading }: RecipeCardProps) => {
 
   return (
     <>
-      <Card 
-        className="w-full max-w-2xl mx-auto cursor-pointer transition-all hover:shadow-lg" 
-        onClick={() => setIsModalOpen(true)}
-      >
+      <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="text-xl md:text-2xl text-primary">
             {recipe.title}
@@ -68,6 +66,12 @@ export const RecipeCard = ({ recipe, isLoading }: RecipeCardProps) => {
               )}
             </ul>
           </div>
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            className="w-full bg-secondary hover:bg-secondary/90"
+          >
+            View Full Recipe
+          </Button>
         </CardContent>
       </Card>
 
@@ -87,11 +91,11 @@ export const RecipeCard = ({ recipe, isLoading }: RecipeCardProps) => {
             </div>
             <div>
               <h3 className="font-semibold mb-3 text-secondary text-lg">Instructions:</h3>
-              <ol className="list-decimal pl-5 space-y-3">
+              <div className="space-y-3 pl-5">
                 {recipe.instructions.map((instruction, index) => (
-                  <li key={index} className="leading-relaxed">{instruction}</li>
+                  <p key={index} className="leading-relaxed">{instruction}</p>
                 ))}
-              </ol>
+              </div>
             </div>
             {recipe.nutritionalInfo && (
               <div>

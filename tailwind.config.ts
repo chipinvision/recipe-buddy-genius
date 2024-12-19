@@ -29,8 +29,8 @@ export default {
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#ffe45e",
-          foreground: "#000000",
+          DEFAULT: "#ff6392",
+          foreground: "#ffffff",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
