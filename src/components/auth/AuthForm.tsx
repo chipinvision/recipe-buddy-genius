@@ -13,40 +13,63 @@ export const AuthForm = () => {
   const [otp, setOTP] = useState("");
 
   const handleSendOTP = async () => {
+    if (!email || !email.includes('@')) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { data, error } = await supabase.auth.signInWithOtp({
         email,
         options: {
           shouldCreateUser: true,
+          emailRedirectTo: window.location.origin,
         },
       });
 
-      if (error) throw error;
+      console.log("OTP send response:", { data, error }); // Debug log
 
-      toast.success("OTP sent to your email");
+      if (error) {
+        console.error("OTP send error:", error); // Debug log
+        throw error;
+      }
+
+      toast.success("OTP sent to your email. Please check your inbox and spam folder.");
       setShowOTPInput(true);
     } catch (error: any) {
-      toast.error(error.message);
+      console.error("OTP send catch error:", error); // Debug log
+      toast.error(error.message || "Failed to send OTP. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleVerifyOTP = async () => {
+    if (!otp || otp.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP");
+      return;
+    }
+
     setLoading(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({
+      const { data, error } = await supabase.auth.verifyOtp({
         email,
         token: otp,
         type: 'email',
       });
 
-      if (error) throw error;
+      console.log("OTP verify response:", { data, error }); // Debug log
+
+      if (error) {
+        console.error("OTP verify error:", error); // Debug log
+        throw error;
+      }
 
       toast.success("Successfully logged in!");
     } catch (error: any) {
-      toast.error(error.message);
+      console.error("OTP verify catch error:", error); // Debug log
+      toast.error(error.message || "Failed to verify OTP. Please try again.");
     } finally {
       setLoading(false);
     }
