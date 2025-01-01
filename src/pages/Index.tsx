@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Tab = "ingredients" | "profile";
 
@@ -20,9 +21,20 @@ const Index = () => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      navigate("/login");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const generateRecipe = async (ingredients?: string[]) => {
@@ -32,17 +44,10 @@ const Index = () => {
         body: { ingredients }
       });
 
-      if (error) {
-        console.error('Error generating recipe:', error);
-        throw error;
-      }
-
-      if (!data) {
-        throw new Error('No recipe data received');
-      }
-
+      if (error) throw error;
+      if (!data) throw new Error('No recipe data received');
       setRecipe(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating recipe:', error);
       toast({
         title: "Error",
@@ -66,17 +71,10 @@ const Index = () => {
           </Button>
         </div>
 
-        {activeTab === "ingredients" ? (
-          <div className="space-y-8">
-            <IngredientInput onSubmit={generateRecipe} isLoading={isLoading} />
-            <RecipeCard recipe={recipe} isLoading={isLoading} />
-          </div>
-        ) : (
-          <div className="space-y-8">
-            <h2 className="text-2xl font-semibold">Profile</h2>
-            <p className="text-gray-600">Profile features coming soon...</p>
-          </div>
-        )}
+        <div className="space-y-8">
+          <IngredientInput onSubmit={generateRecipe} isLoading={isLoading} />
+          <RecipeCard recipe={recipe} isLoading={isLoading} />
+        </div>
       </div>
 
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
