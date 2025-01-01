@@ -25,33 +25,44 @@ export const AuthForm = () => {
 
     setLoading(true);
     try {
-      const { data, error } = isSignUp 
-        ? await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              emailRedirectTo: window.location.origin,
-            },
-          })
-        : await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
-
-      console.log("Auth response:", { data, error }); // Debug log
-
-      if (error) {
-        console.error("Auth error:", error); // Debug log
-        throw error;
-      }
-
       if (isSignUp) {
-        toast.success("Please check your email to confirm your account");
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
+        });
+
+        if (error) {
+          if (error.message.includes("User already registered")) {
+            toast.error("This email is already registered. Please sign in instead.");
+          } else {
+            toast.error(error.message);
+          }
+          console.error("Sign up error:", error);
+        } else if (data.user) {
+          toast.success("Please check your email to confirm your account");
+        }
       } else {
-        toast.success("Successfully logged in!");
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          if (error.message.includes("Invalid login credentials")) {
+            toast.error("Invalid email or password. Please try again or sign up if you don't have an account.");
+          } else {
+            toast.error(error.message);
+          }
+          console.error("Sign in error:", error);
+        } else if (data.user) {
+          toast.success("Successfully logged in!");
+        }
       }
     } catch (error: any) {
-      console.error("Auth catch error:", error); // Debug log
+      console.error("Auth catch error:", error);
       toast.error(error.message || "Authentication failed. Please try again.");
     } finally {
       setLoading(false);
